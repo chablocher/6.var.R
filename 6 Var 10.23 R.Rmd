@@ -1,0 +1,1175 @@
+---
+title: "6 Var 10.23"
+author: "Chase Baerlocher"
+date: "2023-12-21"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Library
+
+```{r Library, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(agricolae)
+library(readxl)
+
+```
+### Set Work
+
+```{r Work, include=FALSE}
+
+BTub_AO3_LOX2_PR1 <- read_excel("~/Crowder Lab/Data Analysis/6 var 10.23/BTub, AO3, LOX2, PR1.xlsx")
+BTub_cPEMV2 <- read_excel("~/Crowder Lab/Data Analysis/6 var 10.23/BTub, cPEMV2.xlsx")
+Phys_and_Fec <- read_excel("~/Crowder Lab/Data Analysis/6 var 10.23/Phys and Fec.xlsx")
+
+```
+### AO3 Work
+
+```{r AO3 Work, include=FALSE}
+
+AO3.Dct<-BTub_AO3_LOX2_PR1$AO3 - BTub_AO3_LOX2_PR1$Btub
+AO3.DctDF<-data.frame(c(BTub_AO3_LOX2_PR1$Var),c(BTub_AO3_LOX2_PR1$Var.Rep),c(AO3.Dct))
+colnames(AO3.DctDF)=c("Var","Var.Rep","AO3Dct")
+AO3.Dct.Avg<-aggregate(x=AO3.DctDF$AO3Dct,by=list(AO3.DctDF$Var.Rep),FUN=mean)
+AO3F.Dct.Avg<-aggregate(x=AO3.DctDF$AO3Dct,by=list(AO3.DctDF$Var,AO3.DctDF$Var.Rep),FUN=mean)
+AO3.Dct.Avg.Rep<-aggregate(x=AO3F.Dct.Avg$x,by=list(AO3F.Dct.Avg$Group.1),FUN=mean)
+AO3.Dct.StDev.Rep<-aggregate(x=AO3F.Dct.Avg$x,by=list(AO3F.Dct.Avg$Group.1),FUN=sd)
+AO3.Dct.SE.Rep<-AO3.Dct.StDev.Rep$x/sqrt(6)
+AO3.Dct.RQ.Rep<-2^-(AO3.Dct.Avg.Rep$x)
+AO3.Stat.Rep<-data.frame(c(AO3.Dct.Avg.Rep),c(AO3.Dct.StDev.Rep$x),c(AO3.Dct.RQ.Rep),c(AO3.Dct.SE.Rep))
+colnames(AO3.Stat.Rep)<-c("Var","Avg.Dct","StDev","RQ","SE")
+
+
+```
+### LOX2 Work
+
+```{r LOX 2 Work, include=FALSE}
+
+LOX2.Dct<-BTub_AO3_LOX2_PR1$LOX2 - BTub_AO3_LOX2_PR1$Btub
+LOX2.DctDF<-data.frame(c(BTub_AO3_LOX2_PR1$Var),c(BTub_AO3_LOX2_PR1$Var.Rep),c(LOX2.Dct))
+colnames(LOX2.DctDF)=c("Var","Var.Rep","LOX2Dct")
+LOX2.Dct.Avg<-aggregate(x=LOX2.DctDF$LOX2Dct,by=list(LOX2.DctDF$Var.Rep),FUN=mean)
+LOX2F.Dct.Avg<-aggregate(x=LOX2.DctDF$LOX2Dct,by=list(LOX2.DctDF$Var,LOX2.DctDF$Var.Rep),FUN=mean)
+LOX2.Dct.Avg.Rep<-aggregate(x=LOX2F.Dct.Avg$x,by=list(LOX2F.Dct.Avg$Group.1),FUN=mean)
+LOX2.Dct.StDev.Rep<-aggregate(x=LOX2F.Dct.Avg$x,by=list(LOX2F.Dct.Avg$Group.1),FUN=sd)
+LOX2.Dct.SE.Rep<-LOX2.Dct.StDev.Rep$x/sqrt(6)
+LOX2.Dct.RQ.Rep<-2^-(LOX2.Dct.Avg.Rep$x)
+LOX2.Stat.Rep<-data.frame(c(LOX2.Dct.Avg.Rep),c(LOX2.Dct.StDev.Rep$x),c(LOX2.Dct.RQ.Rep),c(LOX2.Dct.SE.Rep))
+colnames(LOX2.Stat.Rep)<-c("Var","Avg.Dct","StDev","RQ","SE")
+
+
+```
+### PR1 Work
+
+```{r PR1 Work, include=FALSE}
+
+PR1.Dct<-BTub_AO3_LOX2_PR1$PR1 - BTub_AO3_LOX2_PR1$Btub
+PR1.DctDF<-data.frame(c(BTub_AO3_LOX2_PR1$Var),c(BTub_AO3_LOX2_PR1$Var.Rep),c(PR1.Dct))
+colnames(PR1.DctDF)=c("Var","Var.Rep","PR1Dct")
+PR1.Dct.Avg<-aggregate(x=PR1.DctDF$PR1Dct,by=list(PR1.DctDF$Var.Rep),FUN=mean)
+PR1F.Dct.Avg<-aggregate(x=PR1.DctDF$PR1Dct,by=list(PR1.DctDF$Var,PR1.DctDF$Var.Rep),FUN=mean)
+PR1.Dct.Avg.Rep<-aggregate(x=PR1F.Dct.Avg$x,by=list(PR1F.Dct.Avg$Group.1),FUN=mean)
+PR1.Dct.StDev.Rep<-aggregate(x=PR1F.Dct.Avg$x,by=list(PR1F.Dct.Avg$Group.1),FUN=sd)
+PR1.Dct.SE.Rep<-PR1.Dct.StDev.Rep$x/sqrt(6)
+PR1.Dct.RQ.Rep<-2^-(PR1.Dct.Avg.Rep$x)
+PR1.Stat.Rep<-data.frame(c(PR1.Dct.Avg.Rep),c(PR1.Dct.StDev.Rep$x),c(PR1.Dct.RQ.Rep),c(PR1.Dct.SE.Rep))
+colnames(PR1.Stat.Rep)<-c("Var","Avg.Dct","StDev","RQ","SE")
+
+
+```
+### cPEMV2 Work
+
+```{r cPEMV2 Work, include=FALSE}
+
+cPEMV2.Dct<-BTub_cPEMV2$cPEMV2 - BTub_cPEMV2$Btub
+cPEMV2.DctDF<-data.frame(c(BTub_cPEMV2$Var),c(BTub_cPEMV2$Var.Rep),c(cPEMV2.Dct))
+colnames(cPEMV2.DctDF)=c("Var","Var.Rep","cPEMV2Dct")
+cPEMV2.Dct.Avg<-aggregate(x=cPEMV2.DctDF$cPEMV2Dct,by=list(cPEMV2.DctDF$Var.Rep),FUN=mean)
+cPEMV2F.Dct.Avg<-aggregate(x=cPEMV2.DctDF$cPEMV2Dct,by=list(cPEMV2.DctDF$Var,cPEMV2.DctDF$Var.Rep),FUN=mean)
+cPEMV2.Dct.Avg.Rep<-aggregate(x=cPEMV2F.Dct.Avg$x,by=list(cPEMV2F.Dct.Avg$Group.1),FUN=mean)
+cPEMV2.Dct.StDev.Rep<-aggregate(x=cPEMV2F.Dct.Avg$x,by=list(cPEMV2F.Dct.Avg$Group.1),FUN=sd)
+cPEMV2.Dct.SE.Rep<-cPEMV2.Dct.StDev.Rep$x/sqrt(6)
+cPEMV2.Dct.RQ.Rep<-2^-(cPEMV2.Dct.Avg.Rep$x)
+cPEMV2.Stat.Rep<-data.frame(c(cPEMV2.Dct.Avg.Rep),c(cPEMV2.Dct.StDev.Rep$x),c(cPEMV2.Dct.RQ.Rep),c(cPEMV2.Dct.SE.Rep))
+colnames(cPEMV2.Stat.Rep)<-c("Var","Avg.Dct","StDev","RQ","SE")
+
+```
+### Physical Eval Work
+
+```{r Physical Eval Work, include=FALSE}
+
+SW.df<-data.frame(Phys_and_Fec$Var,Phys_and_Fec$SW)
+colnames(SW.df)=c("Var","SW")
+SW.plot<-data.frame(c(aggregate(x=SW.df$SW,by=list(SW.df$Var),FUN=mean),aggregate(x=SW.df$SW,by=list(SW.df$Var),FUN=sd)))
+SW.plot1<-subset(SW.plot,select=-c(Group.1.1))
+SW.plot1.SE<-SW.plot1$x.1/sqrt(6)
+SW.plot.full<-data.frame(c(SW.plot1),c(SW.plot1.SE))
+colnames(SW.plot.full)=c("Var","Avg. SW","sd","SE")
+RW.df<-data.frame(Phys_and_Fec$Var,Phys_and_Fec$RW)
+colnames(RW.df)=c("Var","RW")
+RW.plot<-data.frame(c(aggregate(x=RW.df$RW,by=list(RW.df$Var),FUN=mean),aggregate(x=RW.df$RW,by=list(RW.df$Var),FUN=sd)))
+RW.plot1<-subset(RW.plot,select=-c(Group.1.1))
+RW.plot1.SE<-RW.plot1$x.1/sqrt(6)
+RW.plot.full<-data.frame(c(RW.plot1),c(RW.plot1.SE))
+colnames(RW.plot.full)=c("Var","Avg. RW","sd","SE")
+NC.df<-data.frame(Phys_and_Fec$Var,Phys_and_Fec$NC)
+NC.df1<-na.omit(NC.df)
+colnames(NC.df1)=c("Var","NC")
+NC.plot<-data.frame(c(aggregate(x=NC.df1$NC,by=list(NC.df1$Var),FUN=mean),aggregate(x=NC.df1$NC,by=list(NC.df1$Var),FUN=sd)))
+NC.plot1<-subset(NC.plot,select=-c(Group.1.1))
+NC.plot1.SE<-NC.plot1$x.1/sqrt(6)
+NC.plot.full<-data.frame(c(NC.plot1),c(NC.plot1.SE))
+colnames(NC.plot.full)=c("Var","Avg. NC","sd","SE")
+
+
+```
+### Fecundity Work
+
+```{r Fecundity Work, include=FALSE}
+
+AA.df<-data.frame(Phys_and_Fec$Var,Phys_and_Fec$AA)
+AA.df1<-na.omit(AA.df)
+colnames(AA.df1)=c("Var","AA")
+AA.plot<-data.frame(c(aggregate(x=AA.df1$AA,by=list(AA.df1$Var),FUN=mean),aggregate(x=AA.df1$AA,by=list(AA.df1$Var),FUN=sd)))
+AA.plot1<-subset(AA.plot,select=-c(Group.1.1))
+AA.plot1.SE<-AA.plot1$x.1/sqrt(6)
+AA.plot.full<-data.frame(c(AA.plot1),c(AA.plot1.SE))
+colnames(AA.plot.full)=c("Var","Avg.AA","sd","SE")
+NA.df<-data.frame(Phys_and_Fec$Var,Phys_and_Fec$`NA`)
+NA.df1<-na.omit(NA.df)
+colnames(NA.df1)=c("Var","NA")
+NA.plot<-data.frame(c(aggregate(x=NA.df1$`NA`,by=list(NA.df1$Var),FUN=mean),aggregate(x=NA.df1$`NA`,by=list(NA.df1$Var),FUN=sd)))
+NA.plot1<-subset(NA.plot,select=-c(Group.1.1))
+NA.plot1.SE<-NA.plot1$x.1/sqrt(6)
+NA.plot.full<-data.frame(c(NA.plot1),c(NA.plot1.SE))
+colnames(NA.plot.full)=c("Var","Avg. NA","sd","SE")
+
+```
+### NRC Compile
+
+```{r NRC Compile, include=FALSE}
+
+NRC.df<-data.frame(c(subset(AO3.DctDF,grepl("NRC",Var))),c(subset(LOX2.DctDF,grepl("NRC",Var))),c(subset(PR1.DctDF,grepl("NRC",Var))))
+NRC.df1<-subset(NRC.df,select=-c(Var.1,Var.2,Var.Rep,Var.Rep.1,Var.Rep.2))
+NRC.Plot.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("NRC",Var))),c(subset(LOX2.Stat.Rep,grepl("NRC",Var))),c(subset(PR1.Stat.Rep,grepl("NRC",Var))))
+NRC.Plot.df1<-subset(NRC.Plot.df,select=-c(Var.1,Var.2))
+colnames(NRC.Plot.df1)=c("Var","AO3.Avg.Dct","AO3.StDev","AO3.RQ","AO3.SE","LOX2.Avg.Dct","LOX2.StDev","LOX2.RQ","LOX2.SE","PR1.Avg.Dct","PR1.StDev","PR1.RQ","PR1.SE")
+NRC.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+NRC.SW.RW.df<-data.frame(c(subset(SW.df,grepl("NRC",Var))),c(subset(RW.df,grepl("NRC",Var))))
+NRC.SW.RW.df1<-subset(NRC.SW.RW.df,select=-c(Var.1))
+NRC.SW.RW.plot<-data.frame(c(subset(SW.plot.full,grepl("NRC",Var))),c(subset(RW.plot.full,grepl("NRC",Var))))
+NRC.SW.RW.plot1<-subset(NRC.SW.RW.plot,select=-c(Var.1))
+colnames(NRC.SW.RW.plot1)=c("Var","SW.Avg","SW.sd","SW.SE","RW.Avg","RW.sd","RW.SE")
+NRC.SW.RW.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+```
+### NRC Stat
+
+```{r NRC Stat}
+
+NRC.AO3.model<-lm(AO3Dct~Var,data=NRC.df1)
+anova(NRC.AO3.model)
+HSD.test(y=NRC.AO3.model,trt="Var",group=T,console=T)
+
+NRC.LOX2.model<-lm(LOX2Dct~Var,data=NRC.df1)
+anova(NRC.LOX2.model)
+HSD.test(y=NRC.LOX2.model,trt="Var",group=T,console=T)
+
+NRC.PR1.model<-lm(PR1Dct~Var,data=NRC.df1)
+anova(NRC.PR1.model)
+HSD.test(y=NRC.PR1.model,trt="Var",group=T,console=T)
+
+NRC.SW.model<-lm(SW~Var,data=NRC.SW.RW.df)
+anova(NRC.SW.model)
+HSD.test(y=NRC.SW.model,trt = "Var",group=T,console=T)
+
+NRC.RW.model<-lm(RW~Var,data=NRC.SW.RW.df)
+anova(NRC.RW.model)
+HSD.test(y=NRC.RW.model,trt = "Var",group=T,console=T)
+
+```
+### NRC Graph
+
+```{r NRC Graph}
+
+NRC.AO3.Plot<-ggplot(NRC.Plot.df1)+
+geom_bar(aes(x=Var,y=AO3.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AO3.RQ-AO3.SE,ymax=AO3.RQ+AO3.SE),width=0.2,color="black")+
+ggtitle("-R Clean AO3 Relative Quantification")
+NRC.AO3.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRC.Plot.df1$AO3.RQ+NRC.Plot.df1$AO3.SE+0.5),Significance=c("a","a","b","b","b","b"))
+NRC.AO3.PF<-NRC.AO3.Plot+geom_text(aes(x=NRC.AO3.Label$Group,y=NRC.AO3.Label$Value),label=NRC.AO3.Label$Significance)
+
+NRC.LOX2.Plot<-ggplot(NRC.Plot.df1)+
+geom_bar(aes(x=Var,y=LOX2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=LOX2.RQ-LOX2.SE,ymax=LOX2.RQ+LOX2.SE),width=0.2,color="black")+
+ggtitle("-R Clean LOX2 Relative Quantification")
+NRC.LOX2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRC.Plot.df1$LOX2.RQ+NRC.Plot.df1$LOX2.SE+0.25),Significance=c("a","a","a","a","a","a"))
+NRC.LOX2.PF<-NRC.LOX2.Plot+geom_text(aes(x=NRC.LOX2.Label$Group,y=NRC.LOX2.Label$Value),label=NRC.LOX2.Label$Significance)
+
+NRC.PR1.Plot<-ggplot(NRC.Plot.df1)+
+geom_bar(aes(x=Var,y=PR1.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=PR1.RQ-PR1.SE,ymax=PR1.RQ+PR1.SE),width=0.2,color="black")+
+ggtitle("-R Clean PR1 Relative Quantification")
+NRC.PR1.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRC.Plot.df1$PR1.RQ+NRC.Plot.df1$PR1.SE+0.5),Significance=c("bc","b","bc","a","cd","d"))
+NRC.PR1.PF<-NRC.PR1.Plot+geom_text(aes(x=NRC.PR1.Label$Group,y=NRC.PR1.Label$Value),label=NRC.PR1.Label$Significance)
+
+NRC.SW.Plot<-ggplot(NRC.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=SW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=SW.Avg-SW.SE,ymax=SW.Avg+SW.SE),width=0.2,color="black")+
+ggtitle("-R Clean Average Shoot Weight")
+NRC.SW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRC.SW.RW.plot1$SW.Avg+NRC.SW.RW.plot1$SW.SE+0.05),Significance=c("ab","b","a","ab","ab","ab"))
+NRC.SW.PF<-NRC.SW.Plot+geom_text(aes(x=NRC.SW.Label$Group,y=NRC.SW.Label$Value),label=NRC.SW.Label$Significance)
+
+NRC.RW.Plot<-ggplot(NRC.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=RW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=RW.Avg-RW.SE,ymax=RW.Avg+RW.SE),width=0.2,color="black")+
+ggtitle("-R Clean Average Root Weight")
+NRC.RW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRC.SW.RW.plot1$RW.Avg+NRC.SW.RW.plot1$RW.SE+0.075),Significance=c("a","a","a","a","a","a"))
+NRC.RW.PF<-NRC.RW.Plot+geom_text(aes(x=NRC.RW.Label$Group,y=NRC.RW.Label$Value),label=NRC.RW.Label$Significance)
+
+```
+### RC Compile
+
+```{r RC Compile, include=FALSE}
+
+RC.df<-data.frame(c(subset(AO3.DctDF,grepl("RC",Var))),c(subset(LOX2.DctDF,grepl("RC",Var))),c(subset(PR1.DctDF,grepl("RC",Var))))
+RC.df1<-subset(RC.df,select=-c(Var.1,Var.2,Var.Rep,Var.Rep.1,Var.Rep.2))
+RC.df1<-RC.df1[!grepl("NR",RC.df1$Var),]
+RC.Plot.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("RC",Var))),c(subset(LOX2.Stat.Rep,grepl("RC",Var))),c(subset(PR1.Stat.Rep,grepl("RC",Var))))
+RC.Plot.df1<-subset(RC.Plot.df,select=-c(Var.1,Var.2))
+colnames(RC.Plot.df1)=c("Var","AO3.Avg.Dct","AO3.StDev","AO3.RQ","AO3.SE","LOX2.Avg.Dct","LOX2.StDev","LOX2.RQ","LOX2.SE","PR1.Avg.Dct","PR1.StDev","PR1.RQ","PR1.SE")
+RC.Plot.df1<-RC.Plot.df1[!grepl("NR",RC.Plot.df1$Var),]
+row.names(NRC.Plot.df1)<-c("Din","Klo","Lyn","Mel","MiC","Win")
+RC.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RC.SW.RW.df<-data.frame(c(subset(SW.df,grepl("RC",Var))),c(subset(RW.df,grepl("RC",Var))))
+RC.SW.RW.df1<-subset(RC.SW.RW.df,select=-c(Var.1))
+RC.SW.RW.df1<-RC.SW.RW.df1[!grepl("NR",RC.SW.RW.df1$Var),]
+RC.SW.RW.plot<-data.frame(c(subset(SW.plot.full,grepl("RC",Var))),c(subset(RW.plot.full,grepl("RC",Var))))
+RC.SW.RW.plot1<-subset(RC.SW.RW.plot,select=-c(Var.1))
+colnames(RC.SW.RW.plot1)=c("Var","SW.Avg","SW.sd","SW.SE","RW.Avg","RW.sd","RW.SE")
+RC.SW.RW.plot1<-RC.SW.RW.plot1<-RC.SW.RW.plot1[!grepl("NR",RC.SW.RW.plot1$Var),]
+RC.SW.RW.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RC.NC.df<-data.frame(c(subset(NC.df1,grepl("RC",Var))))
+RC.NC.plot<-data.frame(c(subset(NC.plot.full,grepl("RC",Var))))
+colnames(RC.NC.plot)=c("Var","NC.Avg","NC.sd","NC.SE")
+RC.NC.plot$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+```
+### RC Stat
+
+```{r RC Stat}
+
+RC.AO3.model<-lm(AO3Dct~Var,data=RC.df1)
+anova(RC.AO3.model)
+HSD.test(y=RC.AO3.model,trt="Var",group=T,console=T)
+
+RC.LOX2.model<-lm(LOX2Dct~Var,data=RC.df1)
+anova(RC.LOX2.model)
+HSD.test(y=RC.LOX2.model,trt="Var",group=T,console=T)
+
+RC.PR1.model<-lm(PR1Dct~Var,data=RC.df1)
+anova(RC.PR1.model)
+HSD.test(y=RC.PR1.model,trt="Var",group=T,console=T)
+
+RC.SW.model<-lm(SW~Var,data=RC.SW.RW.df1)
+anova(RC.SW.model)
+HSD.test(y=RC.SW.model,trt = "Var",group=T,console=T)
+
+RC.RW.model<-lm(RW~Var,data=RC.SW.RW.df1)
+anova(RC.RW.model)
+HSD.test(y=RC.RW.model,trt = "Var",group=T,console=T)
+
+RC.NC.model<-lm(NC~Var,data=RC.NC.df)
+anova(RC.NC.model)
+HSD.test(y=RC.NC.model,trt="Var",group=T,console=T)
+
+```
+### RC Graph
+
+```{r RC Graph}
+
+RC.AO3.Plot<-ggplot(RC.Plot.df1)+
+geom_bar(aes(x=Var,y=AO3.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AO3.RQ-AO3.SE,ymax=AO3.RQ+AO3.SE),width=0.2,color="black")+
+ggtitle("+R Clean AO3 Relative Quantification")
+RC.AO3.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RC.Plot.df1$AO3.RQ+RC.Plot.df1$AO3.SE+0.25),Significance=c("b","a","b","a","b","a"))
+RC.AO3.PF<-RC.AO3.Plot+geom_text(aes(x=RC.AO3.Label$Group,y=RC.AO3.Label$Value),label=RC.AO3.Label$Significance)
+
+RC.LOX2.Plot<-ggplot(NRC.Plot.df1)+
+geom_bar(aes(x=Var,y=LOX2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=LOX2.RQ-LOX2.SE,ymax=LOX2.RQ+LOX2.SE),width=0.2,color="black")+
+ggtitle("+R Clean LOX2 Relative Quantification")
+RC.LOX2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RC.Plot.df1$LOX2.RQ+RC.Plot.df1$LOX2.SE+0.5),Significance=c("b","b","b","b","b","a"))
+RC.LOX2.PF<-RC.LOX2.Plot+geom_text(aes(x=RC.LOX2.Label$Group,y=RC.LOX2.Label$Value),label=RC.LOX2.Label$Significance)
+
+RC.PR1.Plot<-ggplot(RC.Plot.df1)+
+geom_bar(aes(x=Var,y=PR1.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=PR1.RQ-PR1.SE,ymax=PR1.RQ+PR1.SE),width=0.2,color="black")+
+ggtitle("+R Clean PR1 Relative Quantification")
+RC.PR1.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RC.Plot.df1$PR1.RQ+RC.Plot.df1$PR1.SE+0.25),Significance=c("b","a","c","a","bc","b"))
+RC.PR1.PF<-RC.PR1.Plot+geom_text(aes(x=RC.PR1.Label$Group,y=RC.PR1.Label$Value),label=RC.PR1.Label$Significance)
+
+RC.SW.Plot<-ggplot(RC.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=SW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=SW.Avg-SW.SE,ymax=SW.Avg+SW.SE),width=0.2,color="black")+
+ggtitle("+R Clean Average Shoot Weight")
+RC.SW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RC.SW.RW.plot1$SW.Avg+RC.SW.RW.plot1$SW.SE+0.05),Significance=c("a","ab","b","ab","ab","ab"))
+RC.SW.PF<-RC.SW.Plot+geom_text(aes(x=RC.SW.Label$Group,y=RC.SW.Label$Value),label=RC.SW.Label$Significance)
+
+RC.RW.Plot<-ggplot(RC.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=RW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=RW.Avg-RW.SE,ymax=RW.Avg+RW.SE),width=0.2,color="black")+
+ggtitle("+R Clean Average Root Weight")
+RC.RW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RC.SW.RW.plot1$RW.Avg+RC.SW.RW.plot1$RW.SE+0.05),Significance=c("a","a","a","a","a","a"))
+RC.RW.PF<-RC.RW.Plot+geom_text(aes(x=RC.RW.Label$Group,y=RC.RW.Label$Value),label=RC.RW.Label$Significance)
+
+RC.NC.Plot<-ggplot(RC.NC.plot)+
+geom_bar(aes(x=Var,y=NC.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NC.Avg-NC.SE,ymax=NC.Avg+NC.SE),width=0.2,color="black")+
+ggtitle("+R Clean Average Nodule Count")
+RC.NC.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RC.NC.plot$NC.Avg+RC.NC.plot$NC.SE+2),Significance=c("a","a","a","a","a","a"))
+RC.NC.PF<-RC.NC.Plot+geom_text(aes(x=RC.NC.Label$Group,y=RC.NC.Label$Value),label=RC.NC.Label$Significance)
+
+```
+### NRS Compile
+
+```{r NRS Compile, include=FALSE}
+
+NRS.df<-data.frame(c(subset(AO3.DctDF,grepl("NRS",Var))),c(subset(LOX2.DctDF,grepl("NRS",Var))),c(subset(PR1.DctDF,grepl("NRS",Var))))
+NRS.df1<-subset(NRS.df,select=-c(Var.1,Var.2,Var.Rep,Var.Rep.1,Var.Rep.2))
+NRS.Plot.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("NRS",Var))),c(subset(LOX2.Stat.Rep,grepl("NRS",Var))),c(subset(PR1.Stat.Rep,grepl("NRS",Var))))
+NRS.Plot.df1<-subset(NRS.Plot.df,select=-c(Var.1,Var.2))
+colnames(NRS.Plot.df1)=c("Var","AO3.Avg.Dct","AO3.StDev","AO3.RQ","AO3.SE","LOX2.Avg.Dct","LOX2.StDev","LOX2.RQ","LOX2.SE","PR1.Avg.Dct","PR1.StDev","PR1.RQ","PR1.SE")
+row.names(NRC.Plot.df1)<-c("Din","Klo","Lyn","Mel","MiC","Win")
+NRS.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+NRS.SW.RW.df<-data.frame(c(subset(SW.df,grepl("NRS",Var))),c(subset(RW.df,grepl("NRS",Var))))
+NRS.SW.RW.df1<-subset(NRS.SW.RW.df,select=-c(Var.1))
+NRS.SW.RW.plot<-data.frame(c(subset(SW.plot.full,grepl("NRS",Var))),c(subset(RW.plot.full,grepl("NRS",Var))))
+NRS.SW.RW.plot1<-subset(NRS.SW.RW.plot,select=-c(Var.1))
+colnames(NRS.SW.RW.plot1)=c("Var","SW.Avg","SW.sd","SW.SE","RW.Avg","RW.sd","RW.SE")
+NRS.SW.RW.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+NRS.AA.NA.df<-data.frame(c(subset(AA.df1,grepl("NRS",Var))),c(subset(NA.df1,grepl("NRS",Var))))
+NRS.AA.NA.df1<-subset(NRS.AA.NA.df,select = -c(Var.1))
+NRS.AA.NA.plot<-data.frame(c(subset(AA.plot.full,grepl("NRS",Var))),c(subset(NA.plot.full,grepl("NRS",Var))))
+NRS.AA.NA.plot1<-subset(NRS.AA.NA.plot,select = -c(Var.1))
+colnames(NRS.AA.NA.plot1)=c("Var","AA.Avg","AA.sd","AA.SE","NA.Avg","NA.sd","NA.SE")
+NRS.AA.NA.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+```
+### NRS Stat
+
+```{r NRS Stat}
+
+NRS.AO3.model<-lm(AO3Dct~Var,data=NRS.df1)
+anova(NRS.AO3.model)
+HSD.test(y=NRS.AO3.model,trt="Var",group=T,console=T)
+
+NRS.LOX2.model<-lm(LOX2Dct~Var,data=NRS.df1)
+anova(NRS.LOX2.model)
+HSD.test(y=NRS.LOX2.model,trt="Var",group=T,console=T)
+
+NRS.PR1.model<-lm(PR1Dct~Var,data=NRS.df1)
+anova(NRS.PR1.model)
+HSD.test(y=NRS.PR1.model,trt="Var",group=T,console=T)
+
+NRS.SW.model<-lm(SW~Var,data=NRS.SW.RW.df1)
+anova(NRS.SW.model)
+HSD.test(y=NRS.SW.model,trt = "Var",group=T,console=T)
+
+NRS.RW.model<-lm(RW~Var,data=NRS.SW.RW.df1)
+anova(NRS.RW.model)
+HSD.test(y=NRS.RW.model,trt = "Var",group=T,console=T)
+
+NRS.AA.model<-lm(AA~Var,data=NRS.AA.NA.df1)
+anova(NRS.AA.model)
+HSD.test(y=NRS.AA.model,trt="Var",group=T,console=T)
+
+NRS.NA.model<-lm(NA.~Var,data=NRS.AA.NA.df1)
+anova(NRS.NA.model)
+HSD.test(y=NRS.NA.model,trt="Var",group=T,console=T)
+
+```
+### NRS Graph
+
+```{r NRS Graph}
+
+NRS.AO3.Plot<-ggplot(NRS.Plot.df1)+
+geom_bar(aes(x=Var,y=AO3.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AO3.RQ-AO3.SE,ymax=AO3.RQ+AO3.SE),width=0.2,color="black")+
+ggtitle("-R Sham AO3 Relative Quantification")
+NRS.AO3.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.Plot.df1$AO3.RQ+NRS.Plot.df1$AO3.SE+0.15),Significance=c("a","a","b","b","b","a"))
+NRS.AO3.PF<-NRS.AO3.Plot+geom_text(aes(x=NRS.AO3.Label$Group,y=NRS.AO3.Label$Value),label=NRS.AO3.Label$Significance)
+
+NRS.LOX2.Plot<-ggplot(NRS.Plot.df1)+
+geom_bar(aes(x=Var,y=LOX2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=LOX2.RQ-LOX2.SE,ymax=LOX2.RQ+LOX2.SE),width=0.2,color="black")+
+ggtitle("-R Sham LOX2 Relative Quantification")
+NRS.LOX2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.Plot.df1$LOX2.RQ+NRS.Plot.df1$LOX2.SE+0.15),Significance=c("a","a","a","a","a","a"))
+NRS.LOX2.PF<-NRS.LOX2.Plot+geom_text(aes(x=NRS.LOX2.Label$Group,y=NRS.LOX2.Label$Value),label=NRS.LOX2.Label$Significance)
+
+NRS.PR1.Plot<-ggplot(NRS.Plot.df1)+
+geom_bar(aes(x=Var,y=PR1.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=PR1.RQ-PR1.SE,ymax=PR1.RQ+PR1.SE),width=0.2,color="black")+
+ggtitle("-R Sham PR1 Relative Quantification")
+NRS.PR1.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.Plot.df1$PR1.RQ+NRS.Plot.df1$PR1.SE+0.15),Significance=c("b","a","b","b","b","b"))
+NRS.PR1.PF<-NRS.PR1.Plot+geom_text(aes(x=NRS.PR1.Label$Group,y=NRS.PR1.Label$Value),label=NRS.PR1.Label$Significance)
+
+NRS.SW.Plot<-ggplot(NRS.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=SW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=SW.Avg-SW.SE,ymax=SW.Avg+SW.SE),width=0.2,color="black")+
+ggtitle("-R Sham Average Shoot Weight")
+NRS.SW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.SW.RW.plot1$SW.Avg+NRS.SW.RW.plot1$SW.SE+0.05),Significance=c("a","bc","ab","a","ab","c"))
+NRS.SW.PF<-NRS.SW.Plot+geom_text(aes(x=NRS.SW.Label$Group,y=NRS.SW.Label$Value),label=NRS.SW.Label$Significance)
+
+NRS.RW.Plot<-ggplot(NRS.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=RW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=RW.Avg-RW.SE,ymax=RW.Avg+RW.SE),width=0.2,color="black")+
+ggtitle("-R Sham Average Root Weight")
+NRS.RW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.SW.RW.plot1$RW.Avg+NRS.SW.RW.plot1$RW.SE+0.075),Significance=c("ab","b","ab","ab","a","ab"))
+NRS.RW.PF<-NRS.RW.Plot+geom_text(aes(x=NRS.RW.Label$Group,y=NRS.RW.Label$Value),label=NRS.RW.Label$Significance)
+
+NRS.AA.Plot<-ggplot(NRS.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=AA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AA.Avg-AA.SE,ymax=AA.Avg+AA.SE),width=0.2,color="black")+
+ggtitle("-R Sham Average Adult Aphid Count")
+NRS.AA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.AA.NA.plot1$AA.Avg+NRS.AA.NA.plot1$AA.SE+.5),Significance=c("a","a","a","a","a","a"))
+NRS.AA.PF<-NRS.AA.Plot+geom_text(aes(x=NRS.AA.Label$Group,y=NRS.AA.Label$Value),label=NRS.AA.Label$Significance)
+
+NRS.NA.Plot<-ggplot(NRS.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=NA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NA.Avg-NA.SE,ymax=NA.Avg+NA.SE),width=0.2,color="black")+
+ggtitle("-R Sham Average Nymph Aphid Count")
+NRS.NA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRS.AA.NA.plot1$NA.Avg+NRS.AA.NA.plot1$NA.SE+1),Significance=c("a","a","a","a","a","a"))
+NRS.NA.PF<-NRS.NA.Plot+geom_text(aes(x=NRS.NA.Label$Group,y=NRS.NA.Label$Value),label=NRS.NA.Label$Significance)
+
+```
+### RS Compile
+
+```{r RS Compile, include=FALSE}
+
+RS.df<-data.frame(c(subset(AO3.DctDF,grepl("RS",Var))),c(subset(LOX2.DctDF,grepl("RS",Var))),c(subset(PR1.DctDF,grepl("RS",Var))))
+RS.df1<-subset(RS.df,select=-c(Var.1,Var.2,Var.Rep,Var.Rep.1,Var.Rep.2))
+RS.df1<-RS.df1[!grepl("NR",RS.df1$Var),]
+RS.Plot.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("RS",Var))),c(subset(LOX2.Stat.Rep,grepl("RS",Var))),c(subset(PR1.Stat.Rep,grepl("RS",Var))))
+RS.Plot.df1<-subset(RS.Plot.df,select=-c(Var.1,Var.2))
+colnames(RS.Plot.df1)=c("Var","AO3.Avg.Dct","AO3.StDev","AO3.RQ","AO3.SE","LOX2.Avg.Dct","LOX2.StDev","LOX2.RQ","LOX2.SE","PR1.Avg.Dct","PR1.StDev","PR1.RQ","PR1.SE")
+RS.Plot.df1<-RS.Plot.df1[!grepl("NR",RS.Plot.df1$Var),]
+row.names(RS.Plot.df1)<-c("Din","Klo","Lyn","Mel","MiC","Win")
+RS.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RS.SW.RW.df<-data.frame(c(subset(SW.df,grepl("RS",Var))),c(subset(RW.df,grepl("RS",Var))))
+RS.SW.RW.df1<-subset(RS.SW.RW.df,select=-c(Var.1))
+RS.SW.RW.df1<-RS.SW.RW.df1[!grepl("NR",RS.SW.RW.df1$Var),]
+RS.SW.RW.plot<-data.frame(c(subset(SW.plot.full,grepl("RS",Var))),c(subset(RW.plot.full,grepl("RS",Var))))
+RS.SW.RW.plot1<-subset(RS.SW.RW.plot,select=-c(Var.1))
+colnames(RS.SW.RW.plot1)=c("Var","SW.Avg","SW.sd","SW.SE","RW.Avg","RW.sd","RW.SE")
+RS.SW.RW.plot1<-RS.SW.RW.plot1<-RS.SW.RW.plot1[!grepl("NR",RS.SW.RW.plot1$Var),]
+RS.SW.RW.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RS.NC.df<-data.frame(c(subset(NC.df1,grepl("RS",Var))))
+RS.NC.plot<-data.frame(c(subset(NC.plot.full,grepl("RS",Var))))
+colnames(RS.NC.plot)=c("Var","NC.Avg","NC.sd","NC.SE")
+RS.NC.plot$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RS.AA.NA.df<-data.frame(c(subset(AA.df1,grepl("RS",Var))),c(subset(NA.df1,grepl("RS",Var))))
+RS.AA.NA.df1<-subset(RS.AA.NA.df,select = -c(Var.1))
+RS.AA.NA.df1<-RS.AA.NA.df1[!grepl("NR",RS.AA.NA.df1$Var),]
+RS.AA.NA.plot<-data.frame(c(subset(AA.plot.full,grepl("RS",Var))),c(subset(NA.plot.full,grepl("RS",Var))))
+RS.AA.NA.plot1<-subset(RS.AA.NA.plot,select = -c(Var.1))
+colnames(RS.AA.NA.plot1)=c("Var","AA.Avg","AA.sd","AA.SE","NA.Avg","NA.sd","NA.SE")
+RS.AA.NA.plot1<-RS.AA.NA.plot1[!grepl("NR",RS.AA.NA.plot1$Var),]
+RS.AA.NA.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+```
+### RS Stat
+
+```{r RS Stat}
+
+RS.AO3.model<-lm(AO3Dct~Var,data=RS.df1)
+anova(RS.AO3.model)
+HSD.test(y=RS.AO3.model,trt="Var",group=T,console=T)
+
+RS.LOX2.model<-lm(LOX2Dct~Var,data=RS.df1)
+anova(RS.LOX2.model)
+HSD.test(y=RS.LOX2.model,trt="Var",group=T,console=T)
+
+RS.PR1.model<-lm(PR1Dct~Var,data=RS.df1)
+anova(RS.PR1.model)
+HSD.test(y=RS.PR1.model,trt="Var",group=T,console=T)
+
+RS.SW.model<-lm(SW~Var,data=RS.SW.RW.df1)
+anova(RS.SW.model)
+HSD.test(y=RS.SW.model,trt = "Var",group=T,console=T)
+
+RS.RW.model<-lm(RW~Var,data=RS.SW.RW.df1)
+anova(RS.RW.model)
+HSD.test(y=RS.RW.model,trt = "Var",group=T,console=T)
+
+RS.NC.model<-lm(NC~Var,data=RS.NC.df)
+anova(RS.NC.model)
+HSD.test(y=RS.NC.model,trt="Var",group=T,console=T)
+
+RS.AA.model<-lm(AA~Var,data=RS.AA.NA.df1)
+anova(RS.AA.model)
+HSD.test(y=RS.AA.model,trt="Var",group=T,console=T)
+
+RS.NA.model<-lm(NA.~Var,data=RS.AA.NA.df1)
+anova(RS.NA.model)
+HSD.test(y=RS.NA.model,trt="Var",group=T,console=T)
+
+```
+### RS Graph
+
+```{r RS Graph}
+
+RS.AO3.Plot<-ggplot(RS.Plot.df1)+
+geom_bar(aes(x=Var,y=AO3.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AO3.RQ-AO3.SE,ymax=AO3.RQ+AO3.SE),width=0.2,color="black")+
+ggtitle("+R Sham AO3 Relative Quantification")
+RS.AO3.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.Plot.df1$AO3.RQ+RS.Plot.df1$AO3.SE+0.15),Significance=c("ab","bc","ab","a","a","c"))
+RS.AO3.PF<-RS.AO3.Plot+geom_text(aes(x=RS.AO3.Label$Group,y=RS.AO3.Label$Value),label=RS.AO3.Label$Significance)
+
+RS.LOX2.Plot<-ggplot(RS.Plot.df1)+
+geom_bar(aes(x=Var,y=LOX2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=LOX2.RQ-LOX2.SE,ymax=LOX2.RQ+LOX2.SE),width=0.2,color="black")+
+ggtitle("+R Sham LOX2 Relative Quantification")
+RS.LOX2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.Plot.df1$LOX2.RQ+RS.Plot.df1$LOX2.SE+0.15),Significance=c("ab","d","bc","bc","a","c"))
+RS.LOX2.PF<-RS.LOX2.Plot+geom_text(aes(x=RS.LOX2.Label$Group,y=RS.LOX2.Label$Value),label=RS.LOX2.Label$Significance)
+
+RS.PR1.Plot<-ggplot(RS.Plot.df1)+
+geom_bar(aes(x=Var,y=PR1.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=PR1.RQ-PR1.SE,ymax=PR1.RQ+PR1.SE),width=0.2,color="black")+
+ggtitle("+R Sham PR1 Relative Quantification")
+RS.PR1.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.Plot.df1$PR1.RQ+RS.Plot.df1$PR1.SE+0.10),Significance=c("a","a","a","a","a","b"))
+RS.PR1.PF<-RS.PR1.Plot+geom_text(aes(x=RS.PR1.Label$Group,y=RS.PR1.Label$Value),label=RS.PR1.Label$Significance)
+
+RS.SW.Plot<-ggplot(RS.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=SW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=SW.Avg-SW.SE,ymax=SW.Avg+SW.SE),width=0.2,color="black")+
+ggtitle("+R Sham Average Shoot Weight")
+RS.SW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.SW.RW.plot1$SW.Avg+RS.SW.RW.plot1$SW.SE+0.05),Significance=c("a","bc","c","ab","bc","c"))
+RS.SW.PF<-RS.SW.Plot+geom_text(aes(x=RS.SW.Label$Group,y=RS.SW.Label$Value),label=RS.SW.Label$Significance)
+
+RS.RW.Plot<-ggplot(RS.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=RW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=RW.Avg-RW.SE,ymax=RW.Avg+RW.SE),width=0.2,color="black")+
+ggtitle("+R Sham Average Root Weight")
+RS.RW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.SW.RW.plot1$RW.Avg+RS.SW.RW.plot1$RW.SE+0.075),Significance=c("ab","a","b","b","ab","b"))
+RS.RW.PF<-RS.RW.Plot+geom_text(aes(x=RS.RW.Label$Group,y=RS.RW.Label$Value),label=RS.RW.Label$Significance)
+
+RS.NC.Plot<-ggplot(RS.NC.plot)+
+geom_bar(aes(x=Var,y=NC.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NC.Avg-NC.SE,ymax=NC.Avg+NC.SE),width=0.2,color="black")+
+ggtitle("+R Sham Average Nodule Count")
+RS.NC.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.NC.plot$NC.Avg+RS.NC.plot$NC.SE+2),Significance=c("a","a","a","a","a","a"))
+RS.NC.PF<-RS.NC.Plot+geom_text(aes(x=RS.NC.Label$Group,y=RS.NC.Label$Value),label=RS.NC.Label$Significance)
+
+RS.AA.Plot<-ggplot(RS.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=AA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AA.Avg-AA.SE,ymax=AA.Avg+AA.SE),width=0.2,color="black")+
+ggtitle("+R Sham Average Adult Aphid Count")
+RS.AA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.AA.NA.plot1$AA.Avg+RS.AA.NA.plot1$AA.SE+.5),Significance=c("b","b","a","b","b","b"))
+RS.AA.PF<-RS.AA.Plot+geom_text(aes(x=RS.AA.Label$Group,y=RS.AA.Label$Value),label=RS.AA.Label$Significance)
+
+RS.NA.Plot<-ggplot(RS.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=NA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NA.Avg-NA.SE,ymax=NA.Avg+NA.SE),width=0.2,color="black")+
+ggtitle("+R Sham Average Nymph Aphid Count")
+RS.NA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RS.AA.NA.plot1$NA.Avg+RS.AA.NA.plot1$NA.SE+1),Significance=c("a","a","a","a","a","a"))
+RS.NA.PF<-RS.NA.Plot+geom_text(aes(x=RS.NA.Label$Group,y=RS.NA.Label$Value),label=RS.NA.Label$Significance)
+
+```
+### NRP Compile
+
+```{r NRP Compile, include=FALSE}
+
+NRP.df<-data.frame(c(subset(AO3.DctDF,grepl("NRP",Var))),c(subset(LOX2.DctDF,grepl("NRP",Var))),c(subset(PR1.DctDF,grepl("NRP",Var))),c(subset(cPEMV2.DctDF,grepl("NRP",Var))))
+NRP.df1<-subset(NRP.df,select=-c(Var.1,Var.2,Var.3,Var.Rep,Var.Rep.1,Var.Rep.2,Var.Rep.3))
+NRP.Plot.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("NRP",Var))),c(subset(LOX2.Stat.Rep,grepl("NRP",Var))),c(subset(PR1.Stat.Rep,grepl("NRP",Var))),c(subset(cPEMV2.Stat.Rep,grepl("NRP",Var))))
+NRP.Plot.df1<-subset(NRP.Plot.df,select=-c(Var.1,Var.2,Var.3))
+colnames(NRP.Plot.df1)=c("Var","AO3.Avg.Dct","AO3.StDev","AO3.RQ","AO3.SE","LOX2.Avg.Dct","LOX2.StDev","LOX2.RQ","LOX2.SE","PR1.Avg.Dct","PR1.StDev","PR1.RQ","PR1.SE","cPEMV2.Avg.Dct","cPEMV2.StDev","cPEMV2.RQ","cPEMV2.SE")
+row.names(NRC.Plot.df1)<-c("Din","Klo","Lyn","Mel","MiC","Win")
+NRP.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+NRP.SW.RW.df<-data.frame(c(subset(SW.df,grepl("NRP",Var))),c(subset(RW.df,grepl("NRP",Var))))
+NRP.SW.RW.df1<-subset(NRP.SW.RW.df,select=-c(Var.1))
+NRP.SW.RW.plot<-data.frame(c(subset(SW.plot.full,grepl("NRP",Var))),c(subset(RW.plot.full,grepl("NRP",Var))))
+NRP.SW.RW.plot1<-subset(NRP.SW.RW.plot,select=-c(Var.1))
+colnames(NRP.SW.RW.plot1)=c("Var","SW.Avg","SW.sd","SW.SE","RW.Avg","RW.sd","RW.SE")
+NRP.SW.RW.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+NRP.AA.NA.df<-data.frame(c(subset(AA.df1,grepl("NRP",Var))),c(subset(NA.df1,grepl("NRP",Var))))
+NRP.AA.NA.df1<-subset(NRP.AA.NA.df,select = -c(Var.1))
+NRP.AA.NA.plot<-data.frame(c(subset(AA.plot.full,grepl("NRP",Var))),c(subset(NA.plot.full,grepl("NRP",Var))))
+NRP.AA.NA.plot1<-subset(NRP.AA.NA.plot,select = -c(Var.1))
+colnames(NRP.AA.NA.plot1)=c("Var","AA.Avg","AA.sd","AA.SE","NA.Avg","NA.sd","NA.SE")
+NRP.AA.NA.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+```
+### NRP Stat
+
+```{r NRP Stat}
+
+NRP.AO3.model<-lm(AO3Dct~Var,data=NRP.df1)
+anova(NRP.AO3.model)
+HSD.test(y=NRP.AO3.model,trt="Var",group=T,console=T)
+
+NRP.LOX2.model<-lm(LOX2Dct~Var,data=NRP.df1)
+anova(NRP.LOX2.model)
+HSD.test(y=NRP.LOX2.model,trt="Var",group=T,console=T)
+
+NRP.PR1.model<-lm(PR1Dct~Var,data=NRP.df1)
+anova(NRP.PR1.model)
+HSD.test(y=NRP.PR1.model,trt="Var",group=T,console=T)
+
+NRP.cPEMV2.model<-lm(cPEMV2Dct~Var,data=NRP.df1)
+anova(NRP.cPEMV2.model)
+HSD.test(y=NRP.cPEMV2.model,trt="Var",group=T,console=T)
+
+NRP.SW.model<-lm(SW~Var,data=NRP.SW.RW.df1)
+anova(NRP.SW.model)
+HSD.test(y=NRP.SW.model,trt = "Var",group=T,console=T)
+
+NRP.RW.model<-lm(RW~Var,data=NRP.SW.RW.df1)
+anova(NRP.RW.model)
+HSD.test(y=NRP.RW.model,trt = "Var",group=T,console=T)
+
+NRP.AA.model<-lm(AA~Var,data=NRP.AA.NA.df1)
+anova(NRP.AA.model)
+HSD.test(y=NRP.AA.model,trt="Var",group=T,console=T)
+
+NRP.NA.model<-lm(NA.~Var,data=NRP.AA.NA.df1)
+anova(NRP.NA.model)
+HSD.test(y=NRP.NA.model,trt="Var",group=T,console=T)
+
+```
+### NRP Graph
+
+```{r NRP Graph}
+
+NRP.AO3.Plot<-ggplot(NRP.Plot.df1)+
+geom_bar(aes(x=Var,y=AO3.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AO3.RQ-AO3.SE,ymax=AO3.RQ+AO3.SE),width=0.2,color="black")+
+ggtitle("-R PEMV AO3 Relative Quantification")
+NRP.AO3.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.Plot.df1$AO3.RQ+NRP.Plot.df1$AO3.SE+0.10),Significance=c("bc","a","cd","cd","d","b"))
+NRP.AO3.PF<-NRP.AO3.Plot+geom_text(aes(x=NRP.AO3.Label$Group,y=NRP.AO3.Label$Value),label=NRP.AO3.Label$Significance)
+
+NRP.LOX2.Plot<-ggplot(NRP.Plot.df1)+
+geom_bar(aes(x=Var,y=LOX2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=LOX2.RQ-LOX2.SE,ymax=LOX2.RQ+LOX2.SE),width=0.2,color="black")+
+ggtitle("-R PEMV LOX2 Relative Quantification")
+NRP.LOX2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.Plot.df1$LOX2.RQ+NRP.Plot.df1$LOX2.SE+0.15),Significance=c("a","a","a","a","a","a"))
+NRP.LOX2.PF<-NRP.LOX2.Plot+geom_text(aes(x=NRP.LOX2.Label$Group,y=NRP.LOX2.Label$Value),label=NRP.LOX2.Label$Significance)
+
+NRP.PR1.Plot<-ggplot(NRP.Plot.df1)+
+geom_bar(aes(x=Var,y=PR1.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=PR1.RQ-PR1.SE,ymax=PR1.RQ+PR1.SE),width=0.2,color="black")+
+ggtitle("-R PEMV PR1 Relative Quantification")
+NRP.PR1.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.Plot.df1$PR1.RQ+NRP.Plot.df1$PR1.SE+0.10),Significance=c("b","a","b","b","b","b"))
+NRP.PR1.PF<-NRP.PR1.Plot+geom_text(aes(x=NRP.PR1.Label$Group,y=NRP.PR1.Label$Value),label=NRP.PR1.Label$Significance)
+
+NRP.cPEMV2.Plot<-ggplot(NRP.Plot.df1)+
+geom_bar(aes(x=Var,y=cPEMV2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=cPEMV2.RQ-cPEMV2.SE,ymax=cPEMV2.RQ+cPEMV2.SE),width=0.2,color="black")+
+ggtitle("-R PEMV cPEMV2 Relative Quantification")
+NRP.cPEMV2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.Plot.df1$cPEMV2.RQ+NRP.Plot.df1$cPEMV2.SE+1),Significance=c("bc","ab","a","d","cd","d"))
+NRP.cPEMV2.PF<-NRP.cPEMV2.Plot+geom_text(aes(x=NRP.cPEMV2.Label$Group,y=NRP.cPEMV2.Label$Value),label=NRP.cPEMV2.Label$Significance)
+
+NRP.SW.Plot<-ggplot(NRP.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=SW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=SW.Avg-SW.SE,ymax=SW.Avg+SW.SE),width=0.2,color="black")+
+ggtitle("-R PEMV Average Shoot Weight")
+NRP.SW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.SW.RW.plot1$SW.Avg+NRP.SW.RW.plot1$SW.SE+0.05),Significance=c("a","b","b","ab","b","b"))
+NRP.SW.PF<-NRP.SW.Plot+geom_text(aes(x=NRP.SW.Label$Group,y=NRP.SW.Label$Value),label=NRP.SW.Label$Significance)
+
+NRP.RW.Plot<-ggplot(NRP.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=RW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=RW.Avg-RW.SE,ymax=RW.Avg+RW.SE),width=0.2,color="black")+
+ggtitle("-R PEMV Average Root Weight")
+NRP.RW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.SW.RW.plot1$RW.Avg+NRP.SW.RW.plot1$RW.SE+0.09),Significance=c("a","ab","b","ab","ab","ab"))
+NRP.RW.PF<-NRP.RW.Plot+geom_text(aes(x=NRP.RW.Label$Group,y=NRP.RW.Label$Value),label=NRP.RW.Label$Significance)
+
+NRP.AA.Plot<-ggplot(NRP.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=AA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AA.Avg-AA.SE,ymax=AA.Avg+AA.SE),width=0.2,color="black")+
+ggtitle("-R PEMV Average Adult Aphid Count")
+NRP.AA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.AA.NA.plot1$AA.Avg+NRP.AA.NA.plot1$AA.SE+.3),Significance=c("a","a","a","a","a","a"))
+NRP.AA.PF<-NRP.AA.Plot+geom_text(aes(x=NRP.AA.Label$Group,y=NRP.AA.Label$Value),label=NRP.AA.Label$Significance)
+
+NRP.NA.Plot<-ggplot(NRP.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=NA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NA.Avg-NA.SE,ymax=NA.Avg+NA.SE),width=0.2,color="black")+
+ggtitle("-R PEMV Average Nymph Aphid Count")
+NRP.NA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(NRP.AA.NA.plot1$NA.Avg+NRP.AA.NA.plot1$NA.SE+2),Significance=c("c","ab","a","bc","ab","abc"))
+NRP.NA.PF<-NRP.NA.Plot+geom_text(aes(x=NRP.NA.Label$Group,y=NRP.NA.Label$Value),label=NRP.NA.Label$Significance)
+
+```
+### RP Compile
+
+```{r RP Compile, include=FALSE}
+
+RP.df<-data.frame(c(subset(AO3.DctDF,grepl("RP",Var))),c(subset(LOX2.DctDF,grepl("RP",Var))),c(subset(PR1.DctDF,grepl("RP",Var))),c(subset(cPEMV2.DctDF,grepl("RP",Var))))
+RP.df1<-subset(RP.df,select=-c(Var.1,Var.2,Var.3,Var.Rep,Var.Rep.1,Var.Rep.2,Var.Rep.3))
+RP.df1<-RP.df1[!grepl("NR",RP.df1$Var),]
+RP.Plot.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("RP",Var))),c(subset(LOX2.Stat.Rep,grepl("RP",Var))),c(subset(PR1.Stat.Rep,grepl("RP",Var))),c(subset(cPEMV2.Stat.Rep,grepl("RP",Var))))
+RP.Plot.df1<-subset(RP.Plot.df,select=-c(Var.1,Var.2,Var.3))
+colnames(RP.Plot.df1)=c("Var","AO3.Avg.Dct","AO3.StDev","AO3.RQ","AO3.SE","LOX2.Avg.Dct","LOX2.StDev","LOX2.RQ","LOX2.SE","PR1.Avg.Dct","PR1.StDev","PR1.RQ","PR1.SE","cPEMV2.Avg.Dct","cPEMV2.StDev","cPEMV2.RQ","cPEMV2.SE")
+RP.Plot.df1<-RP.Plot.df1[!grepl("NR",RP.Plot.df1$Var),]
+row.names(RP.Plot.df1)<-c("Din","Klo","Lyn","Mel","MiC","Win")
+RP.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RP.SW.RW.df<-data.frame(c(subset(SW.df,grepl("RP",Var))),c(subset(RW.df,grepl("RP",Var))))
+RP.SW.RW.df1<-subset(RP.SW.RW.df,select=-c(Var.1))
+RP.SW.RW.df1<-RP.SW.RW.df1[!grepl("NR",RP.SW.RW.df1$Var),]
+RP.SW.RW.plot<-data.frame(c(subset(SW.plot.full,grepl("RP",Var))),c(subset(RW.plot.full,grepl("RP",Var))))
+RP.SW.RW.plot1<-subset(RP.SW.RW.plot,select=-c(Var.1))
+colnames(RP.SW.RW.plot1)=c("Var","SW.Avg","SW.sd","SW.SE","RW.Avg","RW.sd","RW.SE")
+RP.SW.RW.plot1<-RP.SW.RW.plot1<-RP.SW.RW.plot1[!grepl("NR",RP.SW.RW.plot1$Var),]
+RP.Plot.df1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+RP.SW.RW.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RP.NC.df<-data.frame(c(subset(NC.df1,grepl("RP",Var))))
+RP.NC.plot<-data.frame(c(subset(NC.plot.full,grepl("RP",Var))))
+colnames(RP.NC.plot)=c("Var","NC.Avg","NC.sd","NC.SE")
+RP.NC.plot$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+RP.AA.NA.df<-data.frame(c(subset(AA.df1,grepl("RP",Var))),c(subset(NA.df1,grepl("RP",Var))))
+RP.AA.NA.df1<-subset(RP.AA.NA.df,select = -c(Var.1))
+RP.AA.NA.df1<-RP.AA.NA.df1[!grepl("NR",RP.AA.NA.df1$Var),]
+RP.AA.NA.plot<-data.frame(c(subset(AA.plot.full,grepl("RP",Var))),c(subset(NA.plot.full,grepl("RP",Var))))
+RP.AA.NA.plot1<-subset(RP.AA.NA.plot,select = -c(Var.1))
+colnames(RP.AA.NA.plot1)=c("Var","AA.Avg","AA.sd","AA.SE","NA.Avg","NA.sd","NA.SE")
+RP.AA.NA.plot1<-RP.AA.NA.plot1[!grepl("NR",RP.AA.NA.plot1$Var),]
+RP.AA.NA.plot1$Var<-c("Din","Klo","Lyn","Mel","MiC","Win")
+
+```
+### RP Stat
+
+```{r RP Stat}
+
+RP.AO3.model<-lm(AO3Dct~Var,data=RP.df1)
+anova(RP.AO3.model)
+HSD.test(y=RP.AO3.model,trt="Var",group=T,console=T)
+
+RP.LOX2.model<-lm(LOX2Dct~Var,data=RP.df1)
+anova(RP.LOX2.model)
+HSD.test(y=RP.LOX2.model,trt="Var",group=T,console=T)
+
+RP.PR1.model<-lm(PR1Dct~Var,data=RP.df1)
+anova(RP.PR1.model)
+HSD.test(y=RP.PR1.model,trt="Var",group=T,console=T)
+
+RP.cPEMV2.model<-lm(cPEMV2Dct~Var,data=RP.df1)
+anova(RP.cPEMV2.model)
+HSD.test(y=RP.cPEMV2.model,trt="Var",group=T,console=T)
+
+RP.SW.model<-lm(SW~Var,data=RP.SW.RW.df1)
+anova(RP.SW.model)
+HSD.test(y=RP.SW.model,trt = "Var",group=T,console=T)
+
+RP.RW.model<-lm(RW~Var,data=RP.SW.RW.df1)
+anova(RP.RW.model)
+HSD.test(y=RP.RW.model,trt = "Var",group=T,console=T)
+
+RP.NC.model<-lm(NC~Var,data=RP.NC.df)
+anova(RP.NC.model)
+HSD.test(y=RP.NC.model,trt="Var",group=T,console=T)
+
+RP.AA.model<-lm(AA~Var,data=RP.AA.NA.df1)
+anova(RP.AA.model)
+HSD.test(y=NRP.AA.model,trt="Var",group=T,console=T)
+
+RP.NA.model<-lm(NA.~Var,data=RP.AA.NA.df1)
+anova(RP.NA.model)
+HSD.test(y=RP.NA.model,trt="Var",group=T,console=T)
+
+```
+### RP Graph
+
+```{r RP Graph}
+
+RP.AO3.Plot<-ggplot(RP.Plot.df1)+
+geom_bar(aes(x=Var,y=AO3.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AO3.RQ-AO3.SE,ymax=AO3.RQ+AO3.SE),width=0.2,color="black")+
+ggtitle("+R PEMV AO3 Relative Quantification")
+RP.AO3.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.Plot.df1$AO3.RQ+RP.Plot.df1$AO3.SE+0.15),Significance=c("ab","a","b","a","ab","b"))
+RP.AO3.PF<-RP.AO3.Plot+geom_text(aes(x=RP.AO3.Label$Group,y=RP.AO3.Label$Value),label=RP.AO3.Label$Significance)
+
+RP.LOX2.Plot<-ggplot(RP.Plot.df1)+
+geom_bar(aes(x=Var,y=LOX2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=LOX2.RQ-LOX2.SE,ymax=LOX2.RQ+LOX2.SE),width=0.2,color="black")+
+ggtitle("+R PEMV LOX2 Relative Quantification")
+RP.LOX2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.Plot.df1$LOX2.RQ+RP.Plot.df1$LOX2.SE+0.15),Significance=c("a","b","ab","a","a","ab"))
+RP.LOX2.PF<-RP.LOX2.Plot+geom_text(aes(x=RP.LOX2.Label$Group,y=RP.LOX2.Label$Value),label=RP.LOX2.Label$Significance)
+
+RP.PR1.Plot<-ggplot(RP.Plot.df1)+
+geom_bar(aes(x=Var,y=PR1.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=PR1.RQ-PR1.SE,ymax=PR1.RQ+PR1.SE),width=0.2,color="black")+
+ggtitle("+R PEMV PR1 Relative Quantification")
+RP.PR1.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.Plot.df1$PR1.RQ+RP.Plot.df1$PR1.SE+0.15),Significance=c("ab","ab","ab","a","ab","b"))
+RP.PR1.PF<-RP.PR1.Plot+geom_text(aes(x=RP.PR1.Label$Group,y=RP.PR1.Label$Value),label=RP.PR1.Label$Significance)
+
+RP.cPEMV2.Plot<-ggplot(RP.Plot.df1)+
+geom_bar(aes(x=Var,y=cPEMV2.RQ),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=cPEMV2.RQ-cPEMV2.SE,ymax=cPEMV2.RQ+cPEMV2.SE),width=0.2,color="black")+
+ggtitle("+R PEMV cPEMV2 Relative Quantification")
+RP.cPEMV2.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.Plot.df1$cPEMV2.RQ+RP.Plot.df1$cPEMV2.SE+1),Significance=c("b","ab","ab","a","ab","b"))
+RP.cPEMV2.PF<-RP.cPEMV2.Plot+geom_text(aes(x=RP.cPEMV2.Label$Group,y=RP.cPEMV2.Label$Value),label=RP.cPEMV2.Label$Significance)
+
+RP.SW.Plot<-ggplot(RP.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=SW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=SW.Avg-SW.SE,ymax=SW.Avg+SW.SE),width=0.2,color="black")+
+ggtitle("+R PEMV Average Shoot Weight")
+RP.SW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.SW.RW.plot1$SW.Avg+RP.SW.RW.plot1$SW.SE+0.05),Significance=c("a","ab","b","ab","ab","b"))
+RP.SW.PF<-RP.SW.Plot+geom_text(aes(x=RP.SW.Label$Group,y=RP.SW.Label$Value),label=RP.SW.Label$Significance)
+
+RP.RW.Plot<-ggplot(RP.SW.RW.plot1)+
+geom_bar(aes(x=Var,y=RW.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=RW.Avg-RW.SE,ymax=RW.Avg+RW.SE),width=0.2,color="black")+
+ggtitle("+R PEMV Average Root Weight")
+RP.RW.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.SW.RW.plot1$RW.Avg+RP.SW.RW.plot1$RW.SE+0.1),Significance=c("abc","a","c","ab","bc","abc"))
+RP.RW.PF<-RP.RW.Plot+geom_text(aes(x=RP.RW.Label$Group,y=RP.RW.Label$Value),label=RP.RW.Label$Significance)
+
+RP.NC.Plot<-ggplot(RP.NC.plot)+
+geom_bar(aes(x=Var,y=NC.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NC.Avg-NC.SE,ymax=NC.Avg+NC.SE),width=0.2,color="black")+
+ggtitle("+R PEMV Average Nodule Count")
+RP.NC.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.NC.plot$NC.Avg+RP.NC.plot$NC.SE+5),Significance=c("a","ab","ab","ab","b","ab"))
+RP.NC.PF<-RP.NC.Plot+geom_text(aes(x=RP.NC.Label$Group,y=RP.NC.Label$Value),label=RP.NC.Label$Significance)
+
+RP.AA.Plot<-ggplot(RP.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=AA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=AA.Avg-AA.SE,ymax=AA.Avg+AA.SE),width=0.2,color="black")+
+ggtitle("+R PEMV Average Adult Aphid Count")
+RP.AA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.AA.NA.plot1$AA.Avg+RP.AA.NA.plot1$AA.SE+.3),Significance=c("a","a","a","a","a","a"))
+RP.AA.PF<-RP.AA.Plot+geom_text(aes(x=RP.AA.Label$Group,y=RP.AA.Label$Value),label=RP.AA.Label$Significance)
+
+RP.NA.Plot<-ggplot(RP.AA.NA.plot1)+
+geom_bar(aes(x=Var,y=NA.Avg),stat="identity",fill="coral1")+
+geom_errorbar(aes(x=Var,ymin=NA.Avg-NA.SE,ymax=NA.Avg+NA.SE),width=0.2,color="black")+
+ggtitle("+R PEMV Average Nymph Aphid Count")
+RP.NA.Label<-data.frame(Group=c("Din","Klo","Lyn","Mel","MiC","Win"),
+Value=c(RP.AA.NA.plot1$NA.Avg+RP.AA.NA.plot1$NA.SE+3),Significance=c("ab","a","bc","c","c","ab"))
+RP.NA.PF<-RP.NA.Plot+geom_text(aes(x=RP.NA.Label$Group,y=RP.NA.Label$Value),label=RP.NA.Label$Significance)
+
+```
+### AO3 Group Work
+
+```{r AO3 Group Work}
+
+NR.AO3.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("NR",Var))))
+NR.AO3.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+NR.AO3.df$Trt<-Aphid.trt
+NR.AO3.group<-data.frame(Var=NR.AO3.df$Var,Trt=NR.AO3.df$Trt,RQ=NR.AO3.df$RQ,SE=NR.AO3.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+NR.AO3.group$Trt<-factor(NR.AO3.group$Trt,levels = Trt.order)
+NR.AO3.group<-NR.AO3.group[order(NR.AO3.group$Trt),]
+
+R.AO3.df<-data.frame(c(subset(AO3.Stat.Rep,grepl("R",Var))))
+R.AO3.df<-R.AO3.df[!grepl("NR",R.AO3.df$Var),]
+R.AO3.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+R.AO3.df$Trt<-Aphid.trt
+R.AO3.group<-data.frame(Var=R.AO3.df$Var,Trt=R.AO3.df$Trt,RQ=R.AO3.df$RQ,SE=R.AO3.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+R.AO3.group$Trt<-factor(R.AO3.group$Trt,levels = Trt.order)
+R.AO3.group<-R.AO3.group[order(R.AO3.group$Trt),]
+
+```
+### AO3 Group Stat
+
+```{r AO3 Group Stat}
+
+NR.AO3.Dctdf<-data.frame(c(subset(AO3.DctDF,grepl("NR",Var))))
+NR.AO3.model<-lm(AO3Dct~Var,data=NR.AO3.Dctdf)
+anova(NR.AO3.model)
+HSD.test(y=NR.AO3.model,trt="Var",group=T,console=T)
+
+R.AO3.Dctdf<-data.frame(c(subset(AO3.DctDF,grepl("R",Var))))
+R.AO3.Dctdf<-R.AO3.Dctdf[!grepl("NR",R.AO3.Dctdf$Var),]
+R.AO3.model<-lm(AO3Dct~Var,data=R.AO3.Dctdf)
+anova(R.AO3.model)
+HSD.test(y=R.AO3.model,trt="Var",group=T,console=T)
+
+```
+### AO3 Group Graphs
+
+```{r AO3 Group Graphs}
+
+NR.AO3.GP<-ggplot(NR.AO3.group,aes(x=Var,y=RQ,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=RQ-SE,ymax=RQ+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R AO3 RQ",x="Var",y="RQ",fill="Trt")
+
+R.AO3.GP<-ggplot(R.AO3.group,aes(x=Var,y=RQ,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=RQ-SE,ymax=RQ+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R AO3 RQ",x="Var",y="RQ",fill="Trt")
+
+
+```
+### LOX2 Group
+
+```{r LOX 2 Group}
+
+NR.LOX2.df<-data.frame(c(subset(LOX2.Stat.Rep,grepl("NR",Var))))
+NR.LOX2.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+NR.LOX2.df$Trt<-Aphid.trt
+NR.LOX2.group<-data.frame(Var=NR.LOX2.df$Var,Trt=NR.LOX2.df$Trt,RQ=NR.LOX2.df$RQ,SE=NR.LOX2.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+NR.LOX2.group$Trt<-factor(NR.LOX2.group$Trt,levels = Trt.order)
+NR.LOX2.group<-NR.LOX2.group[order(NR.LOX2.group$Trt),]
+NR.LOX2.GP<-ggplot(NR.LOX2.group,aes(x=Var,y=RQ,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=RQ-SE,ymax=RQ+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R LOX2 RQ",x="Var",y="RQ",fill="Trt")
+
+R.LOX2.df<-data.frame(c(subset(LOX2.Stat.Rep,grepl("R",Var))))
+R.LOX2.df<-R.LOX2.df[!grepl("NR",R.LOX2.df$Var),]
+R.LOX2.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+R.LOX2.df$Trt<-Aphid.trt
+R.LOX2.group<-data.frame(Var=R.LOX2.df$Var,Trt=R.LOX2.df$Trt,RQ=R.LOX2.df$RQ,SE=R.LOX2.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+R.LOX2.group$Trt<-factor(R.LOX2.group$Trt,levels = Trt.order)
+R.LOX2.group<-R.LOX2.group[order(R.LOX2.group$Trt),]
+R.LOX2.GP<-ggplot(R.LOX2.group,aes(x=Var,y=RQ,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=RQ-SE,ymax=RQ+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R LOX2 RQ",x="Var",y="RQ",fill="Trt")
+
+```
+### PR1 Group
+
+```{r PR1 Group}
+
+NR.PR1.df<-data.frame(c(subset(PR1.Stat.Rep,grepl("NR",Var))))
+NR.PR1.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+NR.PR1.df$Trt<-Aphid.trt
+NR.PR1.group<-data.frame(Var=NR.PR1.df$Var,Trt=NR.PR1.df$Trt,RQ=NR.PR1.df$RQ,SE=NR.PR1.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+NR.PR1.group$Trt<-factor(NR.PR1.group$Trt,levels = Trt.order)
+NR.PR1.group<-NR.PR1.group[order(NR.PR1.group$Trt),]
+NR.PR1.GP<-ggplot(NR.PR1.group,aes(x=Var,y=RQ,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=RQ-SE,ymax=RQ+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R PR1 RQ",x="Var",y="RQ",fill="Trt")
+
+R.PR1.df<-data.frame(c(subset(PR1.Stat.Rep,grepl("R",Var))))
+R.PR1.df<-R.PR1.df[!grepl("NR",R.PR1.df$Var),]
+R.PR1.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+R.PR1.df$Trt<-Aphid.trt
+R.PR1.group<-data.frame(Var=R.PR1.df$Var,Trt=R.PR1.df$Trt,RQ=R.PR1.df$RQ,SE=R.PR1.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+R.PR1.group$Trt<-factor(R.PR1.group$Trt,levels = Trt.order)
+R.PR1.group<-R.PR1.group[order(R.PR1.group$Trt),]
+R.PR1.GP<-ggplot(R.PR1.group,aes(x=Var,y=RQ,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=RQ-SE,ymax=RQ+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R PR1 RQ",x="Var",y="RQ",fill="Trt")
+
+```
+### SW Group
+
+```{r SW Group}
+
+NR.SW.df<-data.frame(c(subset(SW.plot.full,grepl("NR",Var))))
+NR.SW.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+NR.SW.df$Trt<-Aphid.trt
+NR.SW.group<-data.frame(Var=NR.SW.df$Var,Trt=NR.SW.df$Trt,Avg=NR.SW.df$Avg..SW,SE=NR.SW.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+NR.SW.group$Trt<-factor(NR.SW.group$Trt,levels = Trt.order)
+NR.SW.group<-NR.SW.group[order(NR.SW.group$Trt),]
+NR.SW.GP<-ggplot(NR.SW.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R Shoot Weight",x="Var",y="Avg Sw",fill="Trt")
+
+R.SW.df<-data.frame(c(subset(SW.plot.full,grepl("R",Var))))
+R.SW.df<-R.SW.df[!grepl("NR",R.SW.df$Var),]
+R.SW.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+R.SW.df$Trt<-Aphid.trt
+R.SW.group<-data.frame(Var=R.SW.df$Var,Trt=R.SW.df$Trt,Avg=R.SW.df$Avg..SW,SE=R.SW.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+R.SW.group$Trt<-factor(R.SW.group$Trt,levels = Trt.order)
+R.SW.group<-R.SW.group[order(R.SW.group$Trt),]
+R.SW.GP<-ggplot(R.SW.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R Shoot Weight",x="Var",y="Avg Sw",fill="Trt")
+
+```
+### RW Group
+
+```{r RW Group}
+
+NR.RW.df<-data.frame(c(subset(RW.plot.full,grepl("NR",Var))))
+NR.RW.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+NR.RW.df$Trt<-Aphid.trt
+NR.RW.group<-data.frame(Var=NR.RW.df$Var,Trt=NR.RW.df$Trt,Avg=NR.RW.df$Avg..RW,SE=NR.RW.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+NR.RW.group$Trt<-factor(NR.RW.group$Trt,levels = Trt.order)
+NR.RW.group<-NR.RW.group[order(NR.RW.group$Trt),]
+NR.RW.GP<-ggplot(NR.RW.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R Root Weight",x="Var",y="Avg RW",fill="Trt")
+
+R.RW.df<-data.frame(c(subset(RW.plot.full,grepl("R",Var))))
+R.RW.df<-R.RW.df[!grepl("NR",R.RW.df$Var),]
+R.RW.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+R.RW.df$Trt<-Aphid.trt
+R.RW.group<-data.frame(Var=R.RW.df$Var,Trt=R.RW.df$Trt,Avg=R.RW.df$Avg..RW,SE=R.RW.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+R.RW.group$Trt<-factor(R.RW.group$Trt,levels = Trt.order)
+R.RW.group<-R.RW.group[order(R.RW.group$Trt),]
+R.RW.GP<-ggplot(R.RW.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R Root Weight",x="Var",y="Avg RW",fill="Trt")
+
+```
+### NC Group
+
+```{r NC Group}
+
+R.NC.df<-data.frame(c(subset(NC.plot.full,grepl("R",Var))))
+R.NC.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("Clean","PEMV","Sham"),each=6)
+R.NC.df$Trt<-Aphid.trt
+R.NC.group<-data.frame(Var=R.NC.df$Var,Trt=R.NC.df$Trt,Avg=R.NC.df$Avg..NC,SE=R.NC.df$SE)
+Trt.order<-c("Clean","Sham","PEMV")
+R.NC.group$Trt<-factor(R.NC.group$Trt,levels = Trt.order)
+R.NC.group<-R.NC.group[order(R.NC.group$Trt),]
+R.NC.GP<-ggplot(R.NC.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R Nodule Count",x="Var",y="Avg NC",fill="Trt")
+
+
+```
+### AA Group
+
+```{r AA Group}
+
+NR.AA.df<-data.frame(c(subset(AA.plot.full,grepl("NR",Var))))
+NR.AA.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("PEMV","Sham"),each=6)
+NR.AA.df$Trt<-Aphid.trt
+NR.AA.group<-data.frame(Var=NR.AA.df$Var,Trt=NR.AA.df$Trt,Avg=NR.AA.df$Avg.AA,SE=NR.AA.df$SE)
+Trt.order<-c("Sham","PEMV")
+NR.AA.group$Trt<-factor(NR.AA.group$Trt,levels = Trt.order)
+NR.AA.group<-NR.AA.group[order(NR.AA.group$Trt),]
+NR.AA.GP<-ggplot(NR.AA.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R Adult Aphid",x="Var",y="Avg AA",fill="Trt")
+
+R.AA.df<-data.frame(c(subset(AA.plot.full,grepl("R",Var))))
+R.AA.df<-R.AA.df[!grepl("NR",R.AA.df$Var),]
+R.AA.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("PEMV","Sham"),each=6)
+R.AA.df$Trt<-Aphid.trt
+R.AA.group<-data.frame(Var=R.AA.df$Var,Trt=R.AA.df$Trt,Avg=R.AA.df$Avg.AA,SE=R.AA.df$SE)
+Trt.order<-c("Sham","PEMV")
+R.AA.group$Trt<-factor(R.AA.group$Trt,levels = Trt.order)
+R.AA.group<-R.AA.group[order(R.AA.group$Trt),]
+R.AA.GP<-ggplot(R.AA.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R Adult Aphid",x="Var",y="Avg AA",fill="Trt")
+
+```
+### NA Group
+
+```{r NA Group}
+
+NR.NA.df<-data.frame(c(subset(NA.plot.full,grepl("NR",Var))))
+NR.NA.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("PEMV","Sham"),each=6)
+NR.NA.df$Trt<-Aphid.trt
+NR.NA.group<-data.frame(Var=NR.NA.df$Var,Trt=NR.NA.df$Trt,Avg=NR.NA.df$Avg..NA,SE=NR.NA.df$SE)
+Trt.order<-c("Sham","PEMV")
+NR.NA.group$Trt<-factor(NR.NA.group$Trt,levels = Trt.order)
+NR.NA.group<-NR.NA.group[order(NR.NA.group$Trt),]
+NR.NA.GP<-ggplot(NR.NA.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped -R Nymph Aphid",x="Var",y="Avg NA",fill="Trt")
+
+R.NA.df<-data.frame(c(subset(NA.plot.full,grepl("R",Var))))
+R.NA.df<-R.NA.df[!grepl("NR",R.NA.df$Var),]
+R.NA.df$Var<-c("Din","Klo","Lyn","Mel","MiC","Win","Din","Klo","Lyn","Mel","MiC","Win")
+Aphid.trt<-rep(c("PEMV","Sham"),each=6)
+R.NA.df$Trt<-Aphid.trt
+R.NA.group<-data.frame(Var=R.NA.df$Var,Trt=R.NA.df$Trt,Avg=R.NA.df$Avg..NA,SE=R.NA.df$SE)
+Trt.order<-c("Sham","PEMV")
+R.NA.group$Trt<-factor(R.NA.group$Trt,levels = Trt.order)
+R.NA.group<-R.NA.group[order(R.NA.group$Trt),]
+R.NA.GP<-ggplot(R.NA.group,aes(x=Var,y=Avg,fill=Trt))+
+geom_bar(stat="identity",position = position_dodge(width = 0.8),width = 0.7)+
+geom_errorbar(aes(x=Var,ymin=Avg-SE,ymax=Avg+SE),position=position_dodge(width=0.8),width=0.2,color="black")+
+labs(title = "Grouped +R Nymph Aphid",x="Var",y="Avg NA",fill="Trt")
+
+```

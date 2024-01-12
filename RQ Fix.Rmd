@@ -1,0 +1,46 @@
+---
+title: "RQ Fix"
+author: "Chase Baerlocher"
+date: "2024-01-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Library
+
+```{r Library, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(agricolae)
+library(readxl)
+
+```
+### Set Work
+
+```{r Work, include=FALSE}
+
+BTub_AO3_LOX2_PR1 <- read_excel("~/Crowder Lab/Data Analysis/6 var 10.23/BTub, AO3, LOX2, PR1.xlsx")
+BTub_cPEMV2 <- read_excel("~/Crowder Lab/Data Analysis/6 var 10.23/BTub, cPEMV2.xlsx")
+Phys_and_Fec <- read_excel("~/Crowder Lab/Data Analysis/6 var 10.23/Phys and Fec.xlsx")
+```
+### AO3 Work
+
+```{r AO3 Work}
+
+AO3.df<-data.frame(c(BTub_AO3_LOX2_PR1$Var),c(BTub_AO3_LOX2_PR1$Var.Rep),c(BTub_AO3_LOX2_PR1$AO3),c(BTub_AO3_LOX2_PR1$Btub))
+colnames(AO3.df)=c("Var","Var.Rep","AO3.Ct","BTub.Ct")
+AO3.Ct.avg<-aggregate(x=AO3.df$AO3.Ct,by=list(AO3.df$Var,AO3.df$Var.Rep),FUN=mean)
+BTub.Ct.avg<-aggregate(x=AO3.df$BTub.Ct,by=list(AO3.df$Var,AO3.df$Var.Rep),FUN=mean)
+AO3.dCt<-AO3.Ct.avg$x - BTub.Ct.avg$x
+AO3.dCt.df<-data.frame(c(AO3.Ct.avg$Group.1),c(AO3.dCt))
+colnames(AO3.dCt.df)=c("Var","dCt")
+AO3.Con.dCt<-data.frame(c(subset(AO3.dCt.df,grepl("RC",Var))))
+AO3.Con.dCt.avg<-aggregate(x=AO3.Con.dCt$dCt,by=list(AO3.Con.dCt$Var),FUN=mean)
+colnames(AO3.Con.dCt.avg)=c("Var","dCt.Avg")
+
+
+
+```
